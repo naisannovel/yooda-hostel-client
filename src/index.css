@@ -1,13 +1,33 @@
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+/* Group utilities */
+
+.rounded-input{
+    @apply py-2 px-6 rounded-3xl focus:outline-none focus:ring-4 text-lg placeholder:text-gray-500
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+.rounded-button{
+    @apply py-2 px-8 rounded-lg bg-blue-100 hover:bg-blue-200 text-blue-800 text-lg focus:outline-none focus:ring-2
+}
+
+.sidebar-item{
+    @apply flex justify-start items-center text-lg text-blue-900 border-b-2 no-underline border-gray-100 bg-gray-200 py-2 rounded-xl hover:bg-gray-300
+}
+
+.sidebar-item-active{
+    @apply flex justify-start items-center text-lg text-blue-900 border-b-2 no-underline border-gray-100 py-2 rounded-xl bg-gray-300
+}
+
+
+/* login and signup background */
+
+.bg-login {
+    background: linear-gradient(to right, rgba(0, 0, 0, 0.8) 50%, rgba(0, 0, 0, 0.8) 100%), url('./assets/images/bg-login.jpg') no-repeat center/cover;
+}
+
+.bg-signup {
+    background: linear-gradient(to right, rgba(0, 0, 0, 0.8) 50%, rgba(0, 0, 0, 0.8) 100%), url('./assets/images/bg-signup.jpg') no-repeat center/cover;
 }
