@@ -25,8 +25,7 @@ const AddNewFoodDrawer = ({ isOpen, drawerOpenHandler, addNewFoodItem, setSpinne
                         swal("successfully added!", "", "success");
             }
 
-            addNewFoodItem(prevState => [...prevState,response.data].pop())
-            console.log(response.data);
+            addNewFoodItem(prevState => [response.data,...prevState])
             drawerOpenHandler()
         })
         .catch(err => {

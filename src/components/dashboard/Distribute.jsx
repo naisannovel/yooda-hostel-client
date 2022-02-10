@@ -49,10 +49,11 @@ const Distribute = () => {
         setDate(new Date());
     };
 
+console.log(spinner);
     const changeHandler = event =>{
         setStudentValue(null)
         setSpinner(true);
-        if(event.target.value !== ''){
+
             axios.get(`${MAIN_API}/student/${event.target.value}`,{
                 headers: {
                     "Authorization": `Bearer ${JSON.parse(localStorage.getItem('token'))}`
@@ -61,12 +62,13 @@ const Distribute = () => {
                 setSpinner(false);
                 setFoundedStudentList(response.data);
                 setShowFoundedList(true)
+            }).catch(err =>{
+                setSpinner(false);
+                setFoundedStudentList([]);
+                setShowFoundedList(false)
             })
-        }else{
-            setFoundedStudentList([]);
-            setShowFoundedList(false)
-        }
     }
+
 
     const foundedStudentClickHandler = item =>{
         setStudentValue(item);
@@ -76,7 +78,7 @@ const Distribute = () => {
     useEffect(()=> {
 
         setSpinner(true);
-        axios.get(`${MAIN_API}/food`,{
+        axios.get(`${MAIN_API}/all/food`,{
             headers: {
                 "Authorization": `Bearer ${JSON.parse(localStorage.getItem('token'))}`
             }})
