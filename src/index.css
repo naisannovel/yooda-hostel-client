@@ -29,6 +29,10 @@
     @apply flex justify-start items-center text-lg text-blue-900 border-b-2 no-underline border-gray-100 py-2 rounded-xl bg-gray-300
 }
 
+.prev-next-button{
+    @apply w-40 py-2 px-8 rounded-lg bg-blue-100 hover:bg-blue-200 text-blue-800 text-lg focus:outline-none focus:ring-2 flex items-center justify-center disabled:bg-blue-50 disabled:border-2 cursor-not-allowed
+}
+
 
 /* login and signup background */
 

@@ -1,6 +1,6 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
-import { IoPencil, IoTrash, IoCheckmarkDoneOutline } from "react-icons/io5";
+import { IoPencil, IoTrash, IoCheckmarkDoneOutline, IoChevronForward, IoChevronBack } from "react-icons/io5";
 import swal from 'sweetalert';
 import { MAIN_API } from '../../API/url';
 import AddStudentDrawer from './AddStudentDrawer';
@@ -14,7 +14,24 @@ const StudentList = () => {
     const [spinner, setSpinner] = useState(false);
     const [editId,setEditId] = useState(null);
 
+    const [nextButtonDisable,setNextButtonDisable] = useState(false);
+
     const [inputData,setInputData] = useState({ fullName:'', roll:'', age:'', class:'', hallName:'' })
+
+    const [skip,setSkip] = useState(0);
+    const [limit,setLimit] = useState(8);
+
+    const previousHandler = ()=>{
+        setLimit(prevState => prevState - 8);
+        setSkip(prevState => prevState - 8);
+        setNextButtonDisable(false);
+    }
+
+    const nextHandler = ()=>{
+        
+        setLimit(prevState => prevState + 8);
+        setSkip(prevState => prevState + 8);
+    }
 
 
     const addNewFoodDrawerHandler = ()=> {
@@ -106,15 +123,19 @@ const StudentList = () => {
     useEffect(()=> {
 
         setSpinner(true);
-        axios.get(`${MAIN_API}/student`,{
+        axios.get(`${MAIN_API}/student?limit=${limit}&skip=${skip}`,{
             headers: {
                 "Authorization": `Bearer ${JSON.parse(localStorage.getItem('token'))}`
             }})
         .then(response =>{
             setSpinner(false);
-            setStudentList(response.data);
+            if(response?.data.length !== 0){
+                setStudentList(response.data);
+            }else{
+                setNextButtonDisable(true);
+            }
         })
-    } ,[])
+    } ,[limit,skip])
 
     return (
         spinner ? <div className='h-screen grid place-items-center'><Spinner2/></div> :
@@ -142,19 +163,16 @@ const StudentList = () => {
                         </thead>
                         <tbody>
                                 { displayStudentList }
-                            {/* <tr>
-                                <th className='text-center py-2'>1</th>
-                                <td className='text-center py-2'> <input className='student-table-input' type="text" placeholder='Student Name' /></td>
-                                <td className='text-center py-2'> <input className='student-table-input' type="text" placeholder='Roll' /> </td>
-                                <td className='text-center py-2'> <input className='student-table-input' type="text" placeholder='Age' /> </td>
-                                <td className='text-center py-2'> <input className='student-table-input' type="text" placeholder='Class' /> </td>
-                                <td className='text-center py-2'> <input className='student-table-input' type="text" placeholder='Hall Name' /> </td>
-                                <td className='text-center py-2'> <input type="checkbox" placeholder='Price' /> </td>
-                                <td className='flex justify-center items-center py-2'> <IoCheckmarkDoneOutline className='text-2xl mr-4 cursor-pointer' /> <IoTrash className='text-2xl cursor-pointer' /> </td>
-                            </tr> */}
                         </tbody>
                 </table>
             </div>
+            {
+                studentList?.length === 0 ? '' : 
+                <div className='flex justify-center mt-10'>
+                <button onClick={previousHandler} disabled={!skip} className='prev-next-button mr-4'><IoChevronBack /> <IoChevronBack className='mr-2 text-lg' /> </button>
+                <button onClick={nextHandler} disabled={nextButtonDisable} className='prev-next-button ml-4'> <IoChevronForward className='ml-2' /> <IoChevronForward/> </button>
+                </div>
+            }
         </div>
     );
 };

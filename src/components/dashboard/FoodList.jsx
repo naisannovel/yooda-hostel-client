@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { IoPencil, IoTrash, IoCheckmarkDoneOutline } from "react-icons/io5";
+import { IoPencil, IoTrash, IoCheckmarkDoneOutline, IoChevronForward, IoChevronBack } from "react-icons/io5";
 import AddNewFoodDrawer from './AddNewFoodDrawer';
 import { MAIN_API } from '../../API/url';
 import axios from 'axios';
@@ -13,8 +13,25 @@ const FoodList = () => {
     const [foodList,setFoodList] = useState([]);
     const [editId,setEditId] = useState(null);
 
+    const [nextButtonDisable,setNextButtonDisable] = useState(false);
+
     const [inputData,setInputData] = useState({ name:'', price:'' })
 
+    const [skip,setSkip] = useState(0);
+    const [limit,setLimit] = useState(8);
+
+
+    const previousHandler = ()=>{
+        setLimit(prevState => prevState - 8);
+        setSkip(prevState => prevState - 8);
+        setNextButtonDisable(false);
+    }
+
+    const nextHandler = ()=>{
+        
+        setLimit(prevState => prevState + 8);
+        setSkip(prevState => prevState + 8);
+    }
 
     const addNewFoodDrawerHandler = ()=> {
         setIsOpenDrawer(!isOpenDrawer)
@@ -74,21 +91,21 @@ const FoodList = () => {
     useEffect(()=> {
 
         setSpinner(true);
-        axios.get(`${MAIN_API}/food`,{
+        axios.get(`${MAIN_API}/food?limit=${limit}&skip=${skip}`,{
             headers: {
                 "Authorization": `Bearer ${JSON.parse(localStorage.getItem('token'))}`
             }})
         .then(response =>{
             setSpinner(false);
-            setFoodList(response.data);
+            if(response?.data.length !== 0){
+                setFoodList(response.data);
+            }else{
+                setNextButtonDisable(true);
+            }
         })
-    } ,[])
+    } ,[limit,skip])
 
-let displayFood;
-    if(!foodList.length){
-        displayFood = <h1>No Item Found</h1> 
-    }else{
-        displayFood = foodList?.map((item,index) => (
+let displayFood = foodList?.map((item,index) => (
             <tr key={item?.id}>
                 <th className='text-center py-2'> { index + 1 } </th>
                 <td className='text-center py-2'> { editId !== item?._id ? item?.name : <input onChange={event => inputChangeHandler(event)} className='table-input' value={inputData?.name} type="text" name='name' placeholder='Food Name' /> } </td>
@@ -96,7 +113,6 @@ let displayFood;
                 <td className='flex justify-center items-center py-2'> { editId !== item?._id ? <IoPencil onClick={()=> editIconClickHandler(item)} className='text-2xl mr-4 cursor-pointer' /> : <IoCheckmarkDoneOutline onClick={()=> updateHandler(item?._id)} className='text-2xl mr-4 cursor-pointer' />} <IoTrash onClick={()=>foodItemDeleteHandler(item?._id)} className='text-2xl cursor-pointer' /> </td>
             </tr>
         ))
-    }
 
     return (
         spinner ? <div className='h-screen grid place-items-center'><Spinner2/></div> :
@@ -124,6 +140,13 @@ let displayFood;
                         </tbody>
                 </table>
             </div>
+            {
+                foodList?.length === 0 ? '' : 
+                <div className='flex justify-center mt-10'>
+                <button onClick={previousHandler} disabled={!skip} className='prev-next-button mr-4'><IoChevronBack /> <IoChevronBack className='mr-2 text-lg' /> </button>
+                <button onClick={nextHandler} disabled={nextButtonDisable} className='prev-next-button ml-4'> <IoChevronForward className='ml-2' /> <IoChevronForward/> </button>
+                </div>
+            }
         </div>
     );
 };
