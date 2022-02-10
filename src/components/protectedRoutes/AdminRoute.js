@@ -12,7 +12,6 @@ const AdminRoute = ({ children }) => {
 
             logOut(() => < Navigate to = '/' / > )
 
-            {/* alert when normal user want to access dashboard */}
             swal("opps!", "This site only available for yooda admin! \n collect admin account from readme.md file", "error")
         }
     }
