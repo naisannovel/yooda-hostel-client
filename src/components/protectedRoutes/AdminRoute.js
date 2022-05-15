@@ -12,7 +12,7 @@ const AdminRoute = ({ children }) => {
 
             logOut(() => < Navigate to = '/' / > )
 
-            swal("opps!", "This site only available for yooda admin! \n collect admin account from readme.md file", "error")
+            swal("opps!", "This site only available for yooda admin! \n use this email and password for login \n email: admin@mail.com \n password: 11111", "error")
         }
     }
 
